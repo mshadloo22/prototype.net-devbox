@@ -17,3 +17,18 @@ Note: if you are using windows please enable virtualization in your bios. to be 
 
 
 
+##step03> run vagrant
+>>vagrant up
+
+
+
+
+
+
+
+
+
+Url for frontend: http://192.168.123.110/prt/
+
+url for api: http://192.168.123.110/prt/api/    
+(my convention http://192.168.123.110/prt/api/Controllername/functionname e.g  http://192.168.123.110/prt/api/Default/test)
