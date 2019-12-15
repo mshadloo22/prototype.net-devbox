@@ -8,9 +8,12 @@ Note: if you are using windows please enable virtualization in your bios. to be 
 3. clone devbox repository git@github.com:mshadloo22/prototype.net-devbox.git into folder prt
 
 ##step02> clone src into source folders run this commands:
-`>>cd prt/src
+
+>>cd prt/src
+
 >>clone git@github.com:mshadloo22/prototype.net.testcode-api.git api
+
 >>clone git@github.com:mshadloo22/prototype.net.testcode-frontend.git frontend
-`
+
 
 
