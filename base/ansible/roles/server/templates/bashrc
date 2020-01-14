@@ -1,0 +1,7 @@
+# set the prompt colour, either 'prod' or 'dev'
+. /etc/bash-colours dev
+alias vi='vim'
+export HISTTIMEFORMAT="%d/%m/%y %T "
+export HISTSIZE="8000"
+# Don't clobber the history when closing multiple shells
+shopt -s histappend

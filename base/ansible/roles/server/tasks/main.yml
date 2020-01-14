@@ -1,0 +1,56 @@
+---
+# "By default, yum deletes downloaded data files when they are no longer needed after a successful operation.", see keepcache=0 in /etc/yum.conf
+
+- name: Install system packages
+  package:
+    name:
+      - acl
+      - ant
+      - curl
+      - git
+      - mod_ruid2
+      - mod_ssl
+      - msodbcsql
+      - postgis
+      - oracle-instantclient19.3-basic
+      - unzip
+      - vim
+      - wget
+      - zip
+    state: present
+  environment:
+    ACCEPT_EULA: Y
+
+- name: Install extra system packages
+  package:
+    name: "{{ server.packages }}"
+    state: present
+  when: server.packages is defined
+  environment:
+    ACCEPT_EULA: Y
+
+- name: Set timezone
+  timezone:
+    name: "{{ server.timezone }}"
+
+- name: Setup firewall
+  firewalld:
+    service: "{{ item }}"
+    permanent: true
+    state: enabled
+  with_items:
+    - http
+    - https
+
+- name: Disable SELinux
+  selinux:
+    state: disabled
+
+- name: Create /etc/bash-colours file
+  template: src=bash-colours dest=/etc/bash-colours
+
+- name: Setup bash colour on load
+  blockinfile:
+    path: /etc/bashrc
+    block: |
+      {{ lookup('file', 'templates/bashrc') }}

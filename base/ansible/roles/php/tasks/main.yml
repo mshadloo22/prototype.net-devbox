@@ -1,0 +1,83 @@
+---
+
+- name: Install Extra Packages for Enterprise Linux
+  package:
+    name:
+      - epel-release
+      - remi-release
+    state: present
+
+- name: Activate remi-php70 repository
+  command: yum-config-manager --enable remi-php70
+
+- name: Install PHP
+  package: name=php state=present
+
+- name: Install PEAR
+  package: name=php-pear state=present
+
+- name: Install PHP standard packages
+  package:
+    name:
+      - php-bcmath
+      - php-cli
+      - php-common
+      - php-curl
+      - php-dom
+      - php-gd
+      - php-intl
+      - php-ldap
+      - php-mbstring
+      - php-mcrypt
+      - php-mysqli
+      - php-mysqlnd
+      - php-oci8
+      - php-odbc
+      - php-opcache
+      - php-pdo_dblib
+      - php-pdo_mysql
+      - php-pdo_odbc
+      - php-pdo_sqlsrv
+      - php-pgsql
+      - php-pspell
+      - php-process
+      - php-pecl-apc
+      - php-pecl-apcu
+      - php-pecl-memcached
+      - php-pecl-msgpack
+      - php-pecl-igbinary
+      - php-pecl-imagick
+      - php-pecl-xdebug
+      - php-soap
+      - php-tidy
+      - php-xmlrpc
+    state: present
+  environment:
+    ACCEPT_EULA: Y
+
+- name: Install PHP extra packages
+  package:
+    name: "{{ php.packages }}"
+    state: present
+  when: php.packages is defined
+
+- name: Ensure timezone is set in php.ini
+  ini_file: dest=/etc/php.ini section=Date option=date.timezone value="{{ server.timezone }}" state=present
+
+- name: Install PHP Apache mod
+  package: name=php state=present
+
+- name: Install PHP FPM
+  package: name=php-fpm state=present
+
+- name: Increase file upload size limit
+  lineinfile:
+      dest=/etc/php.ini
+      regexp='upload_max_filesize = 2M'
+      line='upload_max_filesize = 20M'
+
+- name: Increase HTTP post size limit
+  lineinfile:
+      dest=/etc/php.ini
+      regexp='post_max_size = 8M'
+      line='post_max_size = 20M'

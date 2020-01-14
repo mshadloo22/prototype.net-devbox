@@ -1,0 +1,55 @@
+---
+# application tasks to be customized and to run after the main provision
+
+- file: path=/data/web/ owner=vagrant group=vagrant state=directory
+- acl: name=/data/web/ entry="default:user:vagrant:rwX" state=present
+- acl: name=/data/web/ entry="default:user:apache:rwX" state=present
+
+- name: Create app directories
+  file: path="{{ item }}" state=directory mode=0755 owner=vagrant group=vagrant
+  with_items:
+    - "/data/web/{{ app }}"
+    - "/data/web/{{ app }}/config"
+
+- name: Create app directories for not synced folders
+  file: path="{{ item }}" state=directory mode=0755 owner=vagrant group=vagrant
+  with_items:
+    - "/data/web/{{ app }}/data"
+    - "/data/web/{{ app }}/api/current/web"
+    - "/data/web/{{ app }}/admin/current/web"
+    - "/data/web/{{ app }}/frontend/current/web"
+  when: not use_synced_folder
+
+- name: Setup app directories permissions
+  acl: name="{{ item.directory }}" entry="{{ item.entry }}" state=present
+  with_items:
+    - { directory: "/data/web/", entry: "default:user:vagrant:rwX" }
+    - { directory: "/data/web/", entry: "default:user:apache:rwX" }
+    - { directory: "/data/web/{{ app }}", entry: "default:user:vagrant:rwX" }
+    - { directory: "/data/web/{{ app }}", entry: "default:user:apache:rwX" }
+    - { directory: "/data/web/{{ app }}/config", entry: "default:user:vagrant:rwX" }
+    - { directory: "/data/web/{{ app }}/config", entry: "default:user:apache:rwX" }
+
+- name: Setup app directories permissions for not synced folders
+  acl: name="{{ item.directory }}" entry="{{ item.entry }}" state=present
+  with_items:
+    - { directory: "/data/web/{{ app }}/data", entry: "default:user:vagrant:rwX" }
+    - { directory: "/data/web/{{ app }}/data", entry: "default:user:apache:rwX" }
+    - { directory: "/data/web/{{ app }}/api/current/web", entry: "default:user:vagrant:rwX" }
+    - { directory: "/data/web/{{ app }}/api/current/web", entry: "default:user:apache:rwX" }
+    - { directory: "/data/web/{{ app }}/admin/current/web", entry: "default:user:vagrant:rwX" }
+    - { directory: "/data/web/{{ app }}/admin/current/web", entry: "default:user:apache:rwX" }
+    - { directory: "/data/web/{{ app }}/frontend/current/web", entry: "default:user:vagrant:rwX" }
+    - { directory: "/data/web/{{ app }}/frontend/current/web", entry: "default:user:apache:rwX" }
+  when: not use_synced_folder
+
+- name: Create environment.ini
+  template: src=environment.ini dest="/data/web/{{ app }}/config/environment.ini"
+  vars:
+    app: "{{ app }}"
+    config_prefix: "{{ env_config_prefix | default(app) }}"
+    database_host: "{{ postgresql_databases.0.login_host | default('localhost') }}"
+    database_port: "{{ postgresql_databases.0.port | default('5432') }}"
+    database_user: "{{ postgresql_users.0.name }}"
+    database_password: "{{ postgresql_users.0.password }}"
+    database_name: "{{ postgresql_databases.0.name }}"

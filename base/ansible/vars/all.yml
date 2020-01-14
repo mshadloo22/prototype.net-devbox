@@ -1,0 +1,38 @@
+---
+
+server:
+  packages: []
+  timezone: Australia/Melbourne
+  locale: en_US.UTF-8
+
+vagrant_local:
+  vm: { hostname: '{{ app }}' }
+
+swap_file_size_mb: '2048'
+
+apache:
+  host: '{{ hostname }}'
+  servername: wwwdev.latrobe.edu.au
+  url_path: '{{ url }}'
+  admin_path: '/data/web/{{ app }}/admin/current/web'
+  api_path: '/data/web/{{ app }}/api/current/web'
+  frontend_path: '/data/web/{{ app }}/frontend/current/web'
+
+postgresql_users:
+  - name: '{{ app }}'
+    password: 'ltuDevbox2019'
+    db: '{{ app }}'
+postgresql_databases:
+  - name: '{{ app }}'
+    login_host: localhost
+    port: 5432
+
+php:
+  packages: []
+
+nodejs_version: '10.x'
+
+nodejs_npm_global_packages:
+  - name: bower
+  - name: gulp
+  - name: yarn

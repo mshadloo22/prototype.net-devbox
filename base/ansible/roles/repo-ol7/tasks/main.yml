@@ -1,0 +1,26 @@
+---
+# reference: https://docs.microsoft.com/en-gb/sql/connect/odbc/linux-mac/installing-the-microsoft-odbc-driver-for-sql-server#redhat-enterprise-server-7
+
+- name: Check if Oracle Linux 7 repo is already configured
+  stat: path={{ ol7_repo_url }}
+  register: ol7_repo_file_result
+
+- name: Install Oracle Linux 7 repo
+  get_url:
+    url: "{{ ol7_repo_url }}"
+    dest: "{{ ol7_repo_file_path }}"
+  register: result
+  when: not ol7_repo_file_result.stat.exists
+
+- name: Download Oracle Linux 7 repo key
+  get_url:
+    url: "{{ ol7_repo_key_url }}"
+    dest: "/tmp/old_repo_key"
+  when: not ol7_repo_file_result.stat.exists
+
+- name: Import Oracle Linux 7 repo key
+  command: rpm --import /tmp/old_repo_key
+  when: not ol7_repo_file_result.stat.exists
+
+- name: Activate ol7_oracle_instantclient repository
+  command: yum-config-manager --enable ol7_oracle_instantclient

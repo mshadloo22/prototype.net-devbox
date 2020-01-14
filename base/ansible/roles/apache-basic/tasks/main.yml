@@ -1,0 +1,32 @@
+---
+- name: Install Apache
+  package: name=httpd state=present
+
+- name: Install Apache Modules
+  apache2_module: state=present name={{ item }}
+  notify: restart httpd
+  with_items:
+    - rewrite
+    - vhost_alias
+    - headers
+    - expires
+    - filter
+    - ssl
+
+- shell: httpd -v
+  register: apache_version
+
+- name: Change default apache2.4 site
+  template: src=vhost24.conf.tpl dest=/etc/httpd/conf.d/default.conf
+  notify: restart httpd
+  when: apache_version.stdout.find('Apache/2.4.') != -1
+
+- name: Enable Apache service
+  service:
+    name: httpd
+    enabled: yes
+
+- name: Start Apache service
+  service:
+    name: httpd
+    state: started

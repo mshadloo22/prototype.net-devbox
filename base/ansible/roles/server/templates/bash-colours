@@ -1,0 +1,97 @@
+#!/bin/bash
+# Set the bash prompt colours based on server role and user
+# This file is read from /etc/bashrc
+# Accepted argument : prod,qas,stg,dev
+
+
+# 20110504 - (rwahyudi) :
+# - Update script logic
+# - Include additional server status ( stagging and qas )
+# - If using screen , update screen title (AWESOME!)
+# 20110518 (rwahyudi) : Add time information
+
+restore='\[\033[00m\]'
+black='\[\033[00;30m\]'
+firebrick='\[\033[00;31m\]'
+red='\[\033[01;31m\]'
+yellow='\033[01;33m\]'
+forest='\[\033[00;32m\]'
+green='\[\033[01;32m\]'
+brown='\[\033[00;33m\]'
+navy='\[\033[00;34m\]'
+blue='\[\033[01;34m\]'
+purple='\[\033[00;35m\]'
+magenta='\[\033[01;35m\]'
+cadet='\[\033[00;36m\]'
+cyan='\[\033[01;36m\]'
+gray='\[\033[00;37m\]'
+white='\[\033[01;37m\]'
+
+DIR_INFO="$blue\w \\$ $restore"
+TIME="$gray[$blue\t$gray]$restore"
+
+
+prod()
+{
+	BASH_PROMPT="$firebrick\h $DIR_INFO"
+}
+
+qas()
+{
+	BASH_PROMPT="$yellow\h $DIR_INFO"
+}
+
+
+dev()
+{
+	 BASH_PROMPT="$cyan\h $DIR_INFO"
+}
+
+systems()
+{
+	 BASH_PROMPT="$purple\h $DIR_INFO"
+}
+
+print_sum()
+{
+	[ -f /root/system-summary.sh ] && /root/system-summary.sh
+}
+
+#############################################
+# 					MAIN 					#
+#############################################
+
+if [ "$TERM" != 'dumb'  ] && [ -n "$BASH" ]
+then
+	case "$1" in
+    	    prod)
+        	    prod
+            	;;
+
+        	qas|stg)
+            	qas
+            	;;
+        	systems)
+            	systems
+            	;;
+        	*)
+				dev
+	esac
+
+	# Display username for non-root user
+	if [ $UID -ne "0" ]
+	then
+		BASH_PROMPT="$green\u$firebrick@$BASH_PROMPT"
+	else
+		# root users will be greeted by summary information
+		print_sum
+	fi
+	export PS1="$TIME $BASH_PROMPT"
+
+	# Change screen title
+	if [ $TERM == "screen" ]
+	then
+		MYHOST=`hostname -s`
+		echo -e '\033k'$MYHOST'\033\\'
+	fi
+fi

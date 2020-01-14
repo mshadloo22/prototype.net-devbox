@@ -1,0 +1,4 @@
+---
+ol7_repo_url: "http://yum.oracle.com/public-yum-ol7.repo"
+ol7_repo_key_url: "http://yum.oracle.com/RPM-GPG-KEY-oracle-ol7"
+ol7_repo_file_path: "/etc/yum.repos.d/public-yum-ol7.repo"

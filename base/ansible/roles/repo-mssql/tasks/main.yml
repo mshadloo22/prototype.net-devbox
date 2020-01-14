@@ -1,0 +1,13 @@
+---
+# reference: https://docs.microsoft.com/en-gb/sql/connect/odbc/linux-mac/installing-the-microsoft-odbc-driver-for-sql-server#redhat-enterprise-server-7
+
+- name: Check if MS SQL repo is already configured
+  stat: path={{ mssql_repo_file_path }}
+  register: mssql_repo_file_result
+
+- name: Install MS SQL repo
+  get_url:
+    url: "{{ mssql_repo_url }}"
+    dest: "{{ mssql_repo_file_path }}"
+  register: result
+  when: not mssql_repo_file_result.stat.exists

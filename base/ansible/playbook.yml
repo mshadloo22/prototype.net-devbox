@@ -1,0 +1,47 @@
+---
+- hosts: all
+  become: true
+  become_user: root
+  vars_files:
+    - vars/all.yml
+    - [../../ansible/vars/all.yml, vars/all.yml]
+  pre_tasks:
+    - name: Check role 'app' exists
+      stat:
+        path: ../../ansible/roles/app
+      register: app_role_dir
+    - name: Check role 'apache' exists
+      stat:
+        path: ../../ansible/roles/apache
+      register: apache_role_dir
+  roles:
+    - vagrant_local
+    - geerlingguy.swap
+    - geerlingguy.repo-epel
+    - geerlingguy.repo-remi
+    - repo-ol7
+    - repo-mssql
+    - server
+    - geerlingguy.postgresql
+    - php
+    - composer
+    - geerlingguy.nodejs
+  tasks:
+    # decide to execute app or app-basic
+    - name: Run role 'app' if exists
+      include_role:
+        role: app
+      when: app_role_dir.stat.exists
+    - name: Run 'app-basic' if role 'app' doesn't exist
+      include_role:
+        role: app-basic
+      when: app_role_dir.stat.exists == false
+    # decide to execute apache or apache-basic
+    - name: Run role 'apache' if exists
+      include_role:
+        role: apache
+      when: apache_role_dir.stat.exists
+    - name: Run 'apache-basic' if role 'apache' doesn't exist
+      include_role:
+        role: apache-basic
+      when: apache_role_dir.stat.exists == false
