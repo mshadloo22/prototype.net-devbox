@@ -29,6 +29,7 @@ Note: if you are using windows please enable virtualization in your bios. to be 
 
 
 Url for frontend: http://192.168.123.110/prt/
+
 url for admin: http://192.168.123.110/prt/admin/
 
 url for api: http://192.168.123.110/prt/api/    
