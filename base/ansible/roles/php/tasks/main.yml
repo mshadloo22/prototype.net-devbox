@@ -7,8 +7,8 @@
       - remi-release
     state: present
 
-- name: Activate remi-php70 repository
-  command: yum-config-manager --enable remi-php70
+- name: Activate remi-php72 repository
+  command: yum-config-manager --enable remi-php72
 
 - name: Install PHP
   package: name=php state=present
