@@ -21,6 +21,10 @@ Note: if you are using windows please enable virtualization in your bios. to be 
 >>vagrant up
 
 
+##step04> in your local(not inside vagrant box) go to folder 
+>>cd devbox/src/api
+>>composer install
+>>composer update
 
 
 
