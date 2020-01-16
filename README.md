@@ -28,7 +28,13 @@ Note: if you are using windows please enable virtualization in your bios. to be 
 
 ##step05> copy all from devbox/src/api/public to devbox/src/api/web
 
+##step06> build admin
+>>cd /data/web/prt/admin/current
+>> npm run build
 
+##step07> build frontend
+>>cd /data/web/prt/frontend/current
+>>npm run build --prod
 
 
 
