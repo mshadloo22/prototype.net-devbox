@@ -26,6 +26,8 @@ Note: if you are using windows please enable virtualization in your bios. to be 
 >>composer install
 >>composer update
 
+##step05> copy all from devbox/src/api/public to devbox/src/api/web
+
 
 
 
